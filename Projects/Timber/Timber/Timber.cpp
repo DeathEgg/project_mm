@@ -76,15 +76,108 @@ int main(int argc, char * argv[])
 	float cloud2Speed = 0.0f;
 	float cloud3Speed = 0.0f;
 
+	// Variables to control time itself
+	Clock clock;
+
 	while (window.isOpen()) {
-		// Handle input
+		/*
+		 * Handle input
+		 */
 		if (Keyboard::isKeyPressed(Keyboard::Escape)) {
 			window.close();
 		}
 
-		// Update the scene
+		/*
+		 * Update the scene
+		 */
+		// Measure time
+		//	 Restart the clock to start counting from 0 again
+		//   Return the amount of time that has passed since the last frame
+		Time dt = clock.restart();
 
-		// Draw the scene
+		// Setup the bee
+		if (!beeActive) {
+			// How fast is the bee
+			srand((int) time(0)); // Seed rand
+			beeSpeed = (rand() % 200) + 200;
+			// How high is the bee
+			srand((int) time(0) * 10); // Reseed rand
+			float height = (rand() % 500) + 500;
+			spBee.setPosition(2000, height);
+			beeActive = true;
+		} 
+		else {
+			// Move the bee
+			spBee.setPosition(spBee.getPosition().x - (beeSpeed * dt.asSeconds()), spBee.getPosition().y);
+			// Has the bee reached the right hand edge of the screen?
+			if (spBee.getPosition().x < -100) {
+				// Set it up ready to be a whole new cloud next frame
+				beeActive = false;
+			}
+		}
+
+		// Manage the clouds
+		// Cloud 1
+		if (!cloud1Active) {
+			// How fast is the cloud
+			srand((int)time(0) * 10);
+			cloud1Speed = (rand() % 200);
+			// How high is the cloud
+			srand((int)time(0) * 10);
+			float height = (rand() % 150);
+			spCloud1.setPosition(-200, height);
+			cloud1Active = true;
+		}
+		else {
+			spCloud1.setPosition(spCloud1.getPosition().x + (cloud1Speed * dt.asSeconds()), spCloud1.getPosition().y);
+			// Has the cloud reached the right hand edge of the screen?
+			if (spCloud1.getPosition().x > 1920) {
+				// Set it up ready to be a whole new cloud next frame
+				cloud1Active = false;
+			}
+		}
+		// Cloud 2
+		if (!cloud2Active) {
+			// How fast is the cloud
+			srand((int)time(0) * 20);
+			cloud2Speed = (rand() % 200);
+			// How high is the cloud
+			srand((int)time(0) * 20);
+			float height = (rand() % 300) - 150;
+			spCloud2.setPosition(-200, height);
+			cloud2Active = true;
+		}
+		else {
+			spCloud2.setPosition(spCloud2.getPosition().x + (cloud2Speed * dt.asSeconds()), spCloud2.getPosition().y);
+			// Has the cloud reached the right hand edge of the screen?
+			if (spCloud2.getPosition().x > 1920) {
+				// Set it up ready to be a whole new cloud next frame
+				cloud2Active = false;
+			}
+		}
+		// Cloud 3
+		if (!cloud3Active) {
+			// How fast is the cloud
+			srand((int)time(0) * 30);
+			cloud3Speed = (rand() % 200);
+			// How high is the cloud
+			srand((int)time(0) * 30);
+			float height = (rand() % 450) - 150;
+			spCloud3.setPosition(-200, height);
+			cloud3Active = true;
+		}
+		else {
+			spCloud3.setPosition(spCloud3.getPosition().x + (cloud3Speed * dt.asSeconds()), spCloud3.getPosition().y);
+			// Has the cloud reached the right hand edge of the screen?
+			if (spCloud3.getPosition().x > 1920) {
+				// Set it up ready to be a whole new cloud next frame
+				cloud3Active = false;
+			}
+		}
+
+		/*
+		 * Draw the scene
+		 */
 		window.clear();
 
 		// Draw Background
@@ -98,6 +191,9 @@ int main(int argc, char * argv[])
 		// Draw the insect
 		window.draw(spBee);
 
+		/*
+		 * Display frame buffer
+		 */
 		window.display();
 	}
 
